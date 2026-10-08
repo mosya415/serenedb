@@ -784,10 +784,9 @@ target_include_directories(
 )
 
 if(TARGET iceberg_catalog_rest_storage_authorization)
-    target_include_directories(
+    target_link_libraries(
         iceberg_catalog_rest_storage_authorization
-        SYSTEM
-        PRIVATE ${OPENSSL_INCLUDE_DIR}
+        PRIVATE OpenSSL::Crypto
     )
 endif()
 
