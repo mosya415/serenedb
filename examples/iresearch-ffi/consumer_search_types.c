@@ -37,11 +37,16 @@
 
 int main(void) {
   const char* path = "./types_index";
-  const char* docs[] = {"quick brown fox lazy dog", "lazy brown dog",
-                        "search storage", "search engines", "and or"};
+  const char* docs[] = {"quick brown fox lazy dog",
+                        "lazy brown dog",
+                        "search storage",
+                        "search engines",
+                        "and or",
+                        "CAFÉ ÉCOLE",
+                        "ПРИВЕТ МИР"};
   irs_ffi_index* ix = irs_ffi_index_create(path, strlen(path));
   CHECK(ix);
-  for (size_t i = 0; i < 5; ++i) {
+  for (size_t i = 0; i < sizeof(docs) / sizeof(*docs); ++i) {
     CHECK(irs_ffi_index_add(ix, docs[i], strlen(docs[i])) == 0);
   }
   CHECK(irs_ffi_index_commit(ix) == 0);
@@ -64,6 +69,11 @@ int main(void) {
     {IRS_FFI_WILDCARD, "s*ch", 2, {2, 3}},
     {IRS_FFI_MATCH_ALL, "AND OR", 1, {4}},
     {IRS_FFI_MATCH_ANY, "AND OR", 1, {4}},
+    {IRS_FFI_MATCH_ALL, "café", 1, {5}},
+    {IRS_FFI_PHRASE, "café école", 1, {5}},
+    {IRS_FFI_MATCH_ALL, "привет мир", 1, {6}},
+    {IRS_FFI_PHRASE, "привет мир", 1, {6}},
+    {IRS_FFI_PHRASE, "мир привет", 0, {0}},
   };
   for (size_t c = 0; c < sizeof(cases) / sizeof(*cases); ++c) {
     for (int scored = 0; scored <= 1; ++scored) {
